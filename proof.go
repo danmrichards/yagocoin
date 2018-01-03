@@ -36,7 +36,10 @@ func (p *Proof) prepareData(nonce int) []byte {
 	return data
 }
 
-// Performs a proof-of-work.
+// Performs a proof-of-work run for a block. We iteratively hash the block
+// and compare the hash to the proof target. The comparison is done by writing
+// the block hash bytes to a big int. If the block hash is less than the target
+// then the proof is valid and vice versa.
 func (p *Proof) Run() (int, []byte) {
 	var hashInt big.Int
 	var hash [32]byte
@@ -73,7 +76,8 @@ func (p *Proof) Validate() bool {
 	return hashInt.Cmp(p.target) == -1
 }
 
-// Builds a new proof.
+// Builds a new proof with a target.  The target for the proof is 256 minus our
+// targetBits value, because 256 is the length of the hash we get from a block.
 func NewProof(b *Block) *Proof {
 	target := big.NewInt(1)
 	target.Lsh(target, uint(256-targetBits))

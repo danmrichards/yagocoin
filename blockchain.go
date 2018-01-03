@@ -1,5 +1,6 @@
 package main
 
+// Represents the chain of blocks.
 type Blockchain struct {
 	blocks []*Block
 }
