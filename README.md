@@ -8,7 +8,7 @@ Pull down the package as normal
 $ go get -u github.com/danmrichards/yagocoin
 ```
 
-YaGo uses dep to manage it's dependencies. From the package directory install
+YaGo uses [dep](https://github.com/golang/dep) to manage it's dependencies. From the package directory install
 them like so:
 ```bash
 $ dep ensure -update
