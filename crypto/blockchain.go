@@ -26,7 +26,7 @@ type BlockchainIterator struct {
 	db          *bolt.DB
 }
 
-// AddBlock creates a new block and adds it to the blockchain..
+// AddBlock creates a new block and adds it to the blockchain.
 func (bc *Blockchain) AddBlock(data string) {
 	var lastHash []byte
 
