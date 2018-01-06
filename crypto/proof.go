@@ -1,4 +1,4 @@
-package main
+package crypto
 
 import (
 	"bytes"
@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+
+	"github.com/danmrichards/yagocoin/domain"
 )
 
 // Maximum counter for proof-of-work algorithm.
@@ -14,7 +16,7 @@ var maxNonce = math.MaxInt64
 // Sets the upper boundary of the hash target.
 const targetBits = 24
 
-// Represents a proof-of-work.
+// Proof represents a proof-of-work.
 type Proof struct {
 	block  *Block
 	target *big.Int
@@ -26,9 +28,9 @@ func (p *Proof) prepareData(nonce int) []byte {
 		[][]byte{
 			p.block.PrevBlockHash,
 			p.block.Data,
-			IntToHex(p.block.Timestamp.Unix()),
-			IntToHex(int64(targetBits)),
-			IntToHex(int64(nonce)),
+			domain.IntToHex(p.block.Timestamp.Unix()),
+			domain.IntToHex(int64(targetBits)),
+			domain.IntToHex(int64(nonce)),
 		},
 		[]byte{},
 	)
@@ -36,7 +38,7 @@ func (p *Proof) prepareData(nonce int) []byte {
 	return data
 }
 
-// Performs a proof-of-work run for a block. We iteratively hash the block
+// Run performs a proof-of-work run for a block. We iteratively hash the block
 // and compare the hash to the proof target. The comparison is done by writing
 // the block hash bytes to a big int. If the block hash is less than the target
 // then the proof is valid and vice versa.
@@ -65,7 +67,7 @@ func (p *Proof) Run() (int, []byte) {
 	return nonce, hash[:]
 }
 
-// Validates a blocks proof-of-work.
+// Validate validates a blocks proof-of-work.
 func (p *Proof) Validate() bool {
 	var hashInt big.Int
 
@@ -76,8 +78,9 @@ func (p *Proof) Validate() bool {
 	return hashInt.Cmp(p.target) == -1
 }
 
-// Builds a new proof with a target.  The target for the proof is 256 minus our
-// targetBits value, because 256 is the length of the hash we get from a block.
+// NewProof builds a new proof with a target.  The target for the proof is 256
+// minus our targetBits value, because 256 is the length of the hash we get
+// from a block.
 func NewProof(b *Block) *Proof {
 	target := big.NewInt(1)
 	target.Lsh(target, uint(256-targetBits))
