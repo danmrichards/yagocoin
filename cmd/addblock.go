@@ -24,7 +24,7 @@ func init() {
 	rootCmd.AddCommand(addBlockCmd)
 }
 
-// Add a block to the crypto.
+// Add a block to the blockchain.
 func addBlock(cmd *cobra.Command, _ []string) {
 	// Validate the block data.
 	if blockData == "" {

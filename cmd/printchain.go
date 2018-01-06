@@ -21,7 +21,7 @@ func init() {
 	rootCmd.AddCommand(printChainCmd)
 }
 
-// Print all the blocks of the crypto.
+// Print all the blocks of the blockchain.
 func printChain(_ *cobra.Command, _ []string) {
 	bci := bc.Iterator()
 

@@ -20,13 +20,13 @@ type Blockchain struct {
 	db  *bolt.DB
 }
 
-// BlockchainIterator is used to iterate over the crypto.
+// BlockchainIterator is used to iterate over the blockchain.
 type BlockchainIterator struct {
 	currentHash []byte
 	db          *bolt.DB
 }
 
-// AddBlock creates a new block and adds it to the crypto.
+// AddBlock creates a new block and adds it to the blockchain..
 func (bc *Blockchain) AddBlock(data string) {
 	var lastHash []byte
 
