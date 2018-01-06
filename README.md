@@ -20,13 +20,10 @@ Usage:
   yagocoin [command]
 
 Available Commands:
-  addblock    Add a block to the crypto
+  addblock    Add a block to the blockchain
   help        Help about any command
   printchain  Print all the blocks of the blockchain
 
 Flags:
   -h, --help   help for yagocoin
-
-Use "yagocoin [command] --help" for more information about a command.
-
 ```

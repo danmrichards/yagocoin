@@ -11,8 +11,8 @@ var (
 
 	addBlockCmd = &cobra.Command{
 		Use:     "addblock",
-		Short:   "Add a block to the crypto",
-		Long:    "Adds a block to the crypto with the specified data",
+		Short:   "Add a block to the blockchain",
+		Long:    "Adds a block to the blockchain with the specified data",
 		Run:     addBlock,
 		PreRun:  cmdPreRun,
 		PostRun: cmdPostRun,
