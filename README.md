@@ -20,10 +20,14 @@ Usage:
   yagocoin [command]
 
 Available Commands:
-  addblock    Add a block to the blockchain
-  help        Help about any command
-  printchain  Print all the blocks of the blockchain
+  createblockchain Create a new blockchain
+  getbalance       Get balance of adress
+  help             Help about any command
+  printchain       Print all the blocks of the blockchain
+  send             Send an amount of coins from one address to another
 
 Flags:
   -h, --help   help for yagocoin
+
+Use "yagocoin [command] --help" for more information about a command.
 ```

@@ -8,6 +8,8 @@ import (
 var (
 	bc *crypto.Blockchain
 
+	address string
+
 	rootCmd = &cobra.Command{
 		Use:   "yagocoin",
 		Short: "Yet Another Go Coin",
