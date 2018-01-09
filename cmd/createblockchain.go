@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/danmrichards/yagocoin/crypto"
 	"github.com/spf13/cobra"
@@ -30,6 +31,10 @@ func createBlockchain(cmd *cobra.Command, _ []string) {
 
 		cmd.Usage()
 		return
+	}
+
+	if !crypto.ValidateAddress(address) {
+		log.Panic("ERROR: Address is not valid")
 	}
 
 	bc := crypto.CreateBlockchain(address)

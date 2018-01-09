@@ -21,6 +21,7 @@ Usage:
 
 Available Commands:
   createblockchain Create a new blockchain
+  createwallet     Generates a new key-pair and saves it into the wallet file
   getbalance       Get balance of adress
   help             Help about any command
   printchain       Print all the blocks of the blockchain

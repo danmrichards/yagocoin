@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/danmrichards/yagocoin/crypto"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +26,7 @@ func init() {
 
 // Get balance of an address.
 func getBalance(cmd *cobra.Command, _ []string) {
-	// Validate the address.
+	// Validate the address argument.
 	if address == "" {
 		fmt.Printf("Invalid or missing address\n")
 		fmt.Println()
@@ -33,8 +35,13 @@ func getBalance(cmd *cobra.Command, _ []string) {
 		return
 	}
 
+	// Validate the address.
+	if !crypto.ValidateAddress(address) {
+		log.Panic("ERROR: Address is not valid")
+	}
+
 	balance := 0
-	UTXOs := bc.FindUTxO(address)
+	UTXOs := bc.FindUTxO(crypto.GetPublicKeyHash([]byte(address)))
 
 	for _, out := range UTXOs {
 		balance += out.Value
