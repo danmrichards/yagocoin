@@ -38,7 +38,10 @@ func createBlockchain(cmd *cobra.Command, _ []string) {
 	}
 
 	bc := crypto.CreateBlockchain(address)
-	bc.Close()
+	defer bc.Close()
+
+	UTXOSet := crypto.UTxOSet{bc}
+	UTXOSet.Reindex()
 
 	fmt.Println("Done!")
 }

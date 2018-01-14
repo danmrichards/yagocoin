@@ -57,8 +57,13 @@ func send(cmd *cobra.Command, _ []string) {
 		return
 	}
 
-	tx := crypto.NewUTxOTransaction(from, to, amount, bc)
-	bc.MineBlock([]*crypto.Transaction{tx})
+	uTxOSet := crypto.UTxOSet{bc}
 
+	tx := crypto.NewUTxOTransaction(from, to, amount, &uTxOSet)
+	cbTx := crypto.NewCoinbaseTx(from, "")
+	txs := []*crypto.Transaction{cbTx, tx}
+
+	newBlock := bc.MineBlock(txs)
+	uTxOSet.Update(newBlock)
 	fmt.Println("Success!")
 }

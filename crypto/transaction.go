@@ -135,7 +135,13 @@ func (tx *Transaction) Verify(prevTXs map[string]Transaction) bool {
 // for mining new blocks.
 func NewCoinbaseTx(to, data string) *Transaction {
 	if data == "" {
-		data = fmt.Sprintf("Reward to '%s'", to)
+		randData := make([]byte, 20)
+		_, err := rand.Read(randData)
+		if err != nil {
+			log.Panic(err)
+		}
+
+		data = fmt.Sprintf("%x", randData)
 	}
 
 	txIn := TxInput{[]byte{}, -1, nil, []byte(data)}
@@ -148,7 +154,7 @@ func NewCoinbaseTx(to, data string) *Transaction {
 }
 
 // NewUTxOTransaction creates a new transaction.
-func NewUTxOTransaction(from, to string, amount int, bc *Blockchain) *Transaction {
+func NewUTxOTransaction(from, to string, amount int, uTxOSet *UTxOSet) *Transaction {
 	var inputs []TxInput
 	var outputs []TxOutput
 
@@ -158,7 +164,7 @@ func NewUTxOTransaction(from, to string, amount int, bc *Blockchain) *Transactio
 	}
 	wallet := wallets.GetWallet(from)
 	pubKeyHash := HashPubKey(wallet.PublicKey)
-	acc, validOutputs := bc.FindSpendableOutputs(pubKeyHash, amount)
+	acc, validOutputs := uTxOSet.FindSpendableOutputs(pubKeyHash, amount)
 
 	if acc < amount {
 		fmt.Println("ERROR: Not enough funds")
@@ -188,7 +194,7 @@ func NewUTxOTransaction(from, to string, amount int, bc *Blockchain) *Transactio
 
 	tx := Transaction{nil, inputs, outputs}
 	tx.ID = tx.Hash()
-	bc.SignTransaction(&tx, wallet.PrivateKey)
+	uTxOSet.Blockchain.SignTransaction(&tx, wallet.PrivateKey)
 
 	return &tx
 }

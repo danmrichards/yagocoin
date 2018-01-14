@@ -41,7 +41,8 @@ func getBalance(cmd *cobra.Command, _ []string) {
 	}
 
 	balance := 0
-	UTXOs := bc.FindUTxO(crypto.GetPublicKeyHash([]byte(address)))
+	uTxOSet := crypto.UTxOSet{bc}
+	UTXOs := uTxOSet.FindUTxO(crypto.GetPublicKeyHash([]byte(address)))
 
 	for _, out := range UTXOs {
 		balance += out.Value

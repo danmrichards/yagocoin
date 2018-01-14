@@ -14,7 +14,7 @@ import (
 var maxNonce = math.MaxInt64
 
 // Sets the upper boundary of the hash target.
-const targetBits = 24
+const targetBits = 16
 
 // Proof represents a proof-of-work.
 type Proof struct {
