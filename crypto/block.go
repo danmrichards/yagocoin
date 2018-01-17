@@ -14,6 +14,7 @@ type Block struct {
 	PrevBlockHash []byte
 	Hash          []byte
 	Nonce         int
+	Height        int
 }
 
 // Serialize serializes a block as gob for storage.
@@ -42,8 +43,8 @@ func (b *Block) HashTransactions() []byte {
 }
 
 // NewBlock creates a new block.
-func NewBlock(transactions []*Transaction, prevBlockHash []byte) *Block {
-	block := &Block{time.Now(), transactions, prevBlockHash, []byte{}, 0}
+func NewBlock(transactions []*Transaction, prevBlockHash []byte, height int) *Block {
+	block := &Block{time.Now(), transactions, prevBlockHash, []byte{}, 0, height}
 
 	pow := NewProof(block)
 	nonce, hash := pow.Run()
@@ -56,7 +57,7 @@ func NewBlock(transactions []*Transaction, prevBlockHash []byte) *Block {
 
 // NewGenesisBlock creates a new "genesis" block to start a chain.
 func NewGenesisBlock(coinbase *Transaction) *Block {
-	return NewBlock([]*Transaction{coinbase}, []byte{})
+	return NewBlock([]*Transaction{coinbase}, []byte{}, 0)
 }
 
 // DeserializeBlock deserializes a block from gob.

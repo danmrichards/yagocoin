@@ -23,8 +23,14 @@ func init() {
 }
 
 // Create a new key-pair and save it into the wallet file
-func createWallet(cmd *cobra.Command, _ []string) {
-	wallets, err := crypto.NewWallets()
+func createWallet(_ *cobra.Command, _ []string) {
+	nodeID = os.Getenv("NODE_ID")
+	if nodeID == "" {
+		fmt.Printf("NODE_ID env. var is not set!")
+		os.Exit(1)
+	}
+
+	wallets, err := crypto.NewWallets(nodeID)
 	if err != nil && !os.IsNotExist(err) {
 		log.Printf("could not create wallet: %s", err)
 
@@ -33,7 +39,7 @@ func createWallet(cmd *cobra.Command, _ []string) {
 	}
 
 	address := wallets.CreateWallet()
-	wallets.SaveToFile()
+	wallets.SaveToFile(nodeID)
 
 	fmt.Printf("Your new address: %s\n", address)
 }

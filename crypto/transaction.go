@@ -154,15 +154,10 @@ func NewCoinbaseTx(to, data string) *Transaction {
 }
 
 // NewUTxOTransaction creates a new transaction.
-func NewUTxOTransaction(from, to string, amount int, uTxOSet *UTxOSet) *Transaction {
+func NewUTxOTransaction(wallet *Wallet, to string, amount int, uTxOSet *UTxOSet) *Transaction {
 	var inputs []TxInput
 	var outputs []TxOutput
 
-	wallets, err := NewWallets()
-	if err != nil {
-		log.Panic(err)
-	}
-	wallet := wallets.GetWallet(from)
 	pubKeyHash := HashPubKey(wallet.PublicKey)
 	acc, validOutputs := uTxOSet.FindSpendableOutputs(pubKeyHash, amount)
 
@@ -185,6 +180,7 @@ func NewUTxOTransaction(from, to string, amount int, uTxOSet *UTxOSet) *Transact
 	}
 
 	// Build a list of outputs
+	from := fmt.Sprintf("%s", wallet.GetAddress())
 	outputs = append(outputs, *NewTxOutput(amount, to))
 
 	// Change.
@@ -197,4 +193,17 @@ func NewUTxOTransaction(from, to string, amount int, uTxOSet *UTxOSet) *Transact
 	uTxOSet.Blockchain.SignTransaction(&tx, wallet.PrivateKey)
 
 	return &tx
+}
+
+// DeserializeTransaction deserializes a transaction
+func DeserializeTransaction(data []byte) Transaction {
+	var transaction Transaction
+
+	decoder := gob.NewDecoder(bytes.NewReader(data))
+	err := decoder.Decode(&transaction)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return transaction
 }

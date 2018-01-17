@@ -2,14 +2,17 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/danmrichards/yagocoin/crypto"
+	"github.com/danmrichards/yagocoin/server"
 	"github.com/spf13/cobra"
 )
 
 var (
 	from, to string
 	amount   int
+	mineNow  bool
 
 	sendCmd = &cobra.Command{
 		Use:     "send",
@@ -25,6 +28,7 @@ func init() {
 	sendCmd.Flags().StringVarP(&from, "from", "f", "", "Address to send the coins from")
 	sendCmd.Flags().StringVarP(&to, "to", "t", "", "Address to send the coins to")
 	sendCmd.Flags().IntVarP(&amount, "amount", "a", 0, "Amount of coins to send")
+	sendCmd.Flags().BoolVarP(&mineNow, "mine", "m", false, "Mine immediately on the same node")
 	rootCmd.AddCommand(sendCmd)
 }
 
@@ -59,11 +63,23 @@ func send(cmd *cobra.Command, _ []string) {
 
 	uTxOSet := crypto.UTxOSet{bc}
 
-	tx := crypto.NewUTxOTransaction(from, to, amount, &uTxOSet)
-	cbTx := crypto.NewCoinbaseTx(from, "")
-	txs := []*crypto.Transaction{cbTx, tx}
+	wallets, err := crypto.NewWallets(nodeID)
+	if err != nil {
+		log.Panic(err)
+	}
+	wallet := wallets.GetWallet(from)
 
-	newBlock := bc.MineBlock(txs)
-	uTxOSet.Update(newBlock)
+	tx := crypto.NewUTxOTransaction(&wallet, to, amount, &uTxOSet)
+
+	if mineNow {
+		cbTx := crypto.NewCoinbaseTx(from, "")
+		txs := []*crypto.Transaction{cbTx, tx}
+
+		newBlock := bc.MineBlock(txs)
+		uTxOSet.Update(newBlock)
+	} else {
+		server.SendTx(server.KnownNodes[0], tx)
+	}
+
 	fmt.Println("Success!")
 }

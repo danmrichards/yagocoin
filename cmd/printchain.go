@@ -28,13 +28,18 @@ func printChain(_ *cobra.Command, _ []string) {
 	for {
 		block := bci.Next()
 
-		fmt.Printf("Hash: %x\n", block.Hash)
-		fmt.Printf("Prev. hash: %x\n", block.PrevBlockHash)
+		fmt.Printf("============ Block %x ============\n", block.Hash)
+		fmt.Printf("Height: %d\n", block.Height)
+		fmt.Printf("Prev. block: %x\n", block.PrevBlockHash)
 
 		pow := crypto.NewProof(block)
-		fmt.Printf("Proof: %s\n", strconv.FormatBool(pow.Validate()))
+		fmt.Printf("PoW: %s\n\n", strconv.FormatBool(pow.Validate()))
 
-		fmt.Println()
+		for _, tx := range block.Transactions {
+			fmt.Println(tx)
+		}
+
+		fmt.Printf("\n\n")
 
 		if len(block.PrevBlockHash) == 0 {
 			break

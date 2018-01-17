@@ -18,5 +18,7 @@
 .idea
 vendor
 blockchain.db
+blockchain_*.db
 yagocoin
 wallet.dat
+wallet_*.dat

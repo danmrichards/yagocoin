@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/danmrichards/yagocoin/crypto"
 	"github.com/spf13/cobra"
 )
@@ -9,6 +12,8 @@ var (
 	bc *crypto.Blockchain
 
 	address string
+
+	nodeID string
 
 	rootCmd = &cobra.Command{
 		Use:   "yagocoin",
@@ -26,8 +31,14 @@ func Execute() error {
 }
 
 func cmdPreRun(_ *cobra.Command, _ []string) {
+	nodeID = os.Getenv("NODE_ID")
+	if nodeID == "" {
+		fmt.Printf("NODE_ID env. var is not set!")
+		os.Exit(1)
+	}
+
 	// Open the connection to the blockchain db.
-	bc = crypto.NewBlockchain()
+	bc = crypto.NewBlockchain(nodeID)
 }
 
 func cmdPostRun(_ *cobra.Command, _ []string) {

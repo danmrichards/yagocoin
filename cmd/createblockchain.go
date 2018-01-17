@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/danmrichards/yagocoin/crypto"
 	"github.com/spf13/cobra"
@@ -24,6 +25,12 @@ func init() {
 
 // Create a new blockchain.
 func createBlockchain(cmd *cobra.Command, _ []string) {
+	nodeID = os.Getenv("NODE_ID")
+	if nodeID == "" {
+		fmt.Printf("NODE_ID env. var is not set!")
+		os.Exit(1)
+	}
+
 	// Validate the address.
 	if address == "" {
 		fmt.Printf("Invalid or missing address\n")
@@ -37,7 +44,7 @@ func createBlockchain(cmd *cobra.Command, _ []string) {
 		log.Panic("ERROR: Address is not valid")
 	}
 
-	bc := crypto.CreateBlockchain(address)
+	bc := crypto.CreateBlockchain(address, nodeID)
 	defer bc.Close()
 
 	UTXOSet := crypto.UTxOSet{bc}
